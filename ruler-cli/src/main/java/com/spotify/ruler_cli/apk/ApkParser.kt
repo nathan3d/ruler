@@ -14,7 +14,7 @@
 * limitations under the License.
 */
 
-package com.spotify.ruler.plugin.apk
+package com.spotify.ruler_cli.apk
 
 import com.android.tools.apk.analyzer.ApkSizeCalculator
 import com.android.tools.apk.analyzer.dex.DexFiles

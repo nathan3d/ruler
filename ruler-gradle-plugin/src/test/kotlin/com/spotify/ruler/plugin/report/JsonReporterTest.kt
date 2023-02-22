@@ -24,7 +24,6 @@ import com.spotify.ruler.models.ComponentType
 import com.spotify.ruler.models.DynamicFeature
 import com.spotify.ruler.models.FileType
 import com.spotify.ruler.models.ResourceType
-import com.spotify.ruler.plugin.dependency.DependencyComponent
 import com.spotify.ruler.plugin.models.AppInfo
 import com.spotify.ruler.plugin.ownership.OwnershipEntry
 import com.spotify.ruler.plugin.ownership.OwnershipInfo

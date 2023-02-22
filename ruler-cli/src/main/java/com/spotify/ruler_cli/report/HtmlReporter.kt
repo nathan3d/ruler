@@ -14,7 +14,7 @@
 * limitations under the License.
 */
 
-package com.spotify.ruler.plugin.report
+package com.spotify.ruler_cli.report
 
 import java.io.File
 

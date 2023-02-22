@@ -14,10 +14,10 @@
 * limitations under the License.
 */
 
-package com.spotify.ruler.plugin.dependency
+package com.spotify.ruler_cli.dependency
 
 import com.spotify.ruler.models.ComponentType
-import com.spotify.ruler.plugin.common.ClassNameSanitizer
+import com.spotify.ruler_cli.common.ClassNameSanitizer
 
 /**
  * Responsible for sanitizing dependency entries, so they can be attributed easier.

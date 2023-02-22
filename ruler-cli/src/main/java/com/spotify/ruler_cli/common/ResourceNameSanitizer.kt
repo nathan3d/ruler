@@ -14,7 +14,7 @@
 * limitations under the License.
 */
 
-package com.spotify.ruler.plugin.common
+package com.spotify.ruler_cli.common
 
 import java.io.File
 import java.io.FileReader

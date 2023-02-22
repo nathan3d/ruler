@@ -14,7 +14,7 @@
 * limitations under the License.
 */
 
-package com.spotify.ruler.plugin.apk
+package com.spotify.ruler_cli.apk
 
 /** Single entry of an APK. */
 sealed class ApkEntry {

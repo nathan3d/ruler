@@ -14,11 +14,9 @@
 * limitations under the License.
 */
 
-package com.spotify.ruler.plugin.apk
+package com.spotify.ruler_cli.apk
 
 import com.android.SdkConstants
-import com.android.build.gradle.internal.SdkLocator
-import com.android.builder.errors.DefaultIssueReporter
 import com.android.bundle.Commands.BuildApksResult
 import com.android.bundle.Devices
 import com.android.prefs.AndroidLocationsSingleton
@@ -27,8 +25,7 @@ import com.android.sdklib.repository.AndroidSdkHandler
 import com.android.tools.build.bundletool.androidtools.Aapt2Command
 import com.android.tools.build.bundletool.commands.BuildApksCommand
 import com.android.tools.build.bundletool.device.DeviceSpecParser
-import com.android.utils.StdLogger
-import com.spotify.ruler.plugin.models.DeviceSpec
+import com.spotify.ruler_cli.models.DeviceSpec
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import java.io.File
@@ -40,7 +37,7 @@ import java.nio.file.Path
  *
  * @param rootDir Root directory of the Gradle project, needed to look up the path of certain binaries.
  */
-class ApkCreator(private val rootDir: File) {
+class ApkCreator(private val rootDir: File, private val sdkLocation: Path) {
 
     /**
      * Creates APKs based on a bundle file using the logic provided by Googles bundletool.
@@ -80,18 +77,10 @@ class ApkCreator(private val rootDir: File) {
 
     /** Finds and returns the location of the aapt2 executable. */
     private fun getAapt2Location(): Path {
-        val sdkLocation = getAndroidSdkLocation()
         val sdkHandler = AndroidSdkHandler.getInstance(AndroidLocationsSingleton, sdkLocation)
         val progressIndicator = object : ProgressIndicatorAdapter() { /* No progress reporting */ }
         val buildToolInfo = sdkHandler.getLatestBuildTool(progressIndicator, true)
         return buildToolInfo.location.resolve(SdkConstants.FN_AAPT2)
-    }
-
-    /** Finds and returns the location of the Android SDK. */
-    private fun getAndroidSdkLocation(): Path {
-        val logger = StdLogger(StdLogger.Level.WARNING)
-        val issueReporter = DefaultIssueReporter(logger)
-        return SdkLocator.getSdkDirectory(rootDir, issueReporter).toPath()
     }
 
     companion object {

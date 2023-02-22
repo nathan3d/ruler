@@ -14,13 +14,22 @@
 * limitations under the License.
 */
 
-package com.spotify.ruler.plugin.models
+package com.spotify.ruler_cli.dependency
 
-import java.io.Serializable
+/** Single entry of a dependency. */
+sealed class DependencyEntry {
+    abstract val name: String
+    abstract val component: String
 
-/** General info about an app. */
-data class AppInfo(val variantName: String, val applicationId: String, val versionName: String) : Serializable {
-    companion object {
-        const val serialVersionUID = 1L
-    }
+    /** Default dependency entry. If an entry has no special type, it is considered to be a default entry. */
+    data class Default(
+        override val name: String,
+        override val component: String,
+    ) : DependencyEntry()
+
+    /** Class file dependency entry. */
+    data class Class(
+        override val name: String,
+        override val component: String,
+    ) : DependencyEntry()
 }

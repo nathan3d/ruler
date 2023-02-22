@@ -14,13 +14,13 @@
 * limitations under the License.
 */
 
-package com.spotify.ruler.plugin.apk
+package com.spotify.ruler_cli.apk
 
 import com.spotify.ruler.models.AppFile
 import com.spotify.ruler.models.FileType
 import com.spotify.ruler.models.ResourceType
-import com.spotify.ruler.plugin.common.ClassNameSanitizer
-import com.spotify.ruler.plugin.common.ResourceNameSanitizer
+import com.spotify.ruler_cli.common.ClassNameSanitizer
+import com.spotify.ruler_cli.common.ResourceNameSanitizer
 
 /**
  * Responsible for sanitizing APK entries, so they can be attributed easier.

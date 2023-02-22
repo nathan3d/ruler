@@ -14,7 +14,7 @@
 * limitations under the License.
 */
 
-package com.spotify.ruler.plugin.models
+package com.spotify.ruler_cli.models
 
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.SerialName

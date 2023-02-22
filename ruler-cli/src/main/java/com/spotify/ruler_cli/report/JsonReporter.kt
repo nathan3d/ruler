@@ -14,16 +14,16 @@
 * limitations under the License.
 */
 
-package com.spotify.ruler.plugin.report
+package com.spotify.ruler_cli.report
 
 import com.spotify.ruler.models.AppComponent
 import com.spotify.ruler.models.AppFile
 import com.spotify.ruler.models.AppReport
 import com.spotify.ruler.models.DynamicFeature
 import com.spotify.ruler.models.Measurable
-import com.spotify.ruler.plugin.dependency.DependencyComponent
-import com.spotify.ruler.plugin.models.AppInfo
-import com.spotify.ruler.plugin.ownership.OwnershipInfo
+import com.spotify.ruler_cli.dependency.DependencyComponent
+import com.spotify.ruler_cli.models.AppInfo
+import com.spotify.ruler_cli.ownership.OwnershipInfo
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import java.io.File

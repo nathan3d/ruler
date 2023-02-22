@@ -14,7 +14,7 @@
 * limitations under the License.
 */
 
-package com.spotify.ruler.plugin.common
+package com.spotify.ruler_cli.common
 
 import com.android.tools.proguard.ProguardMap
 import java.io.File

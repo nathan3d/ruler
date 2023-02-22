@@ -14,7 +14,7 @@
 * limitations under the License.
 */
 
-package com.spotify.ruler.plugin.ownership
+package com.spotify.ruler_cli.ownership
 
 import com.spotify.ruler.models.ComponentType
 

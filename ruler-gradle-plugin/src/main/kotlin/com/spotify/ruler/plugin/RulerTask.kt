@@ -16,23 +16,26 @@
 
 package com.spotify.ruler.plugin
 
+import com.android.build.gradle.internal.SdkLocator
+import com.android.builder.errors.DefaultIssueReporter
+import com.android.utils.StdLogger
 import com.spotify.ruler.models.AppFile
 import com.spotify.ruler.models.ComponentType
-import com.spotify.ruler.plugin.apk.ApkCreator
-import com.spotify.ruler.plugin.apk.ApkParser
-import com.spotify.ruler.plugin.apk.ApkSanitizer
-import com.spotify.ruler.plugin.attribution.Attributor
-import com.spotify.ruler.plugin.common.ClassNameSanitizer
-import com.spotify.ruler.plugin.common.ResourceNameSanitizer
-import com.spotify.ruler.plugin.dependency.DependencyComponent
-import com.spotify.ruler.plugin.dependency.DependencyParser
-import com.spotify.ruler.plugin.dependency.DependencySanitizer
-import com.spotify.ruler.plugin.models.AppInfo
-import com.spotify.ruler.plugin.models.DeviceSpec
-import com.spotify.ruler.plugin.ownership.OwnershipFileParser
-import com.spotify.ruler.plugin.ownership.OwnershipInfo
-import com.spotify.ruler.plugin.report.HtmlReporter
-import com.spotify.ruler.plugin.report.JsonReporter
+import com.spotify.ruler.plugin.dependency.EntryParser
+import com.spotify.ruler_cli.apk.ApkCreator
+import com.spotify.ruler_cli.apk.ApkParser
+import com.spotify.ruler_cli.apk.ApkSanitizer
+import com.spotify.ruler_cli.attribution.Attributor
+import com.spotify.ruler_cli.common.ClassNameSanitizer
+import com.spotify.ruler_cli.common.ResourceNameSanitizer
+import com.spotify.ruler_cli.dependency.DependencyComponent
+import com.spotify.ruler_cli.dependency.DependencySanitizer
+import com.spotify.ruler_cli.models.AppInfo
+import com.spotify.ruler_cli.models.DeviceSpec
+import com.spotify.ruler_cli.ownership.OwnershipFileParser
+import com.spotify.ruler_cli.ownership.OwnershipInfo
+import com.spotify.ruler_cli.report.HtmlReporter
+import com.spotify.ruler_cli.report.JsonReporter
 import org.gradle.api.DefaultTask
 import org.gradle.api.file.DirectoryProperty
 import org.gradle.api.file.RegularFileProperty
@@ -42,6 +45,8 @@ import org.gradle.api.tasks.InputFile
 import org.gradle.api.tasks.Optional
 import org.gradle.api.tasks.OutputDirectory
 import org.gradle.api.tasks.TaskAction
+import java.io.File
+import java.nio.file.Path
 
 abstract class RulerTask : DefaultTask() {
 
@@ -96,7 +101,7 @@ abstract class RulerTask : DefaultTask() {
     }
 
     private fun getFilesFromBundle(): Map<String, List<AppFile>> {
-        val apkCreator = ApkCreator(project.rootDir)
+        val apkCreator = ApkCreator(project.rootDir, getAndroidSdkLocation(project.rootDir))
         val splits = apkCreator.createSplitApks(bundleFile.asFile.get(), deviceSpec.get(), workingDir.asFile.get())
 
         val apkParser = ApkParser()
@@ -111,7 +116,7 @@ abstract class RulerTask : DefaultTask() {
     }
 
     private fun getDependencies(): Map<String, List<DependencyComponent>> {
-        val dependencyParser = DependencyParser()
+        val dependencyParser = EntryParser()
         val entries = dependencyParser.parse(project, appInfo.get())
 
         val classNameSanitizer = ClassNameSanitizer(mappingFile.asFile.orNull)
@@ -148,5 +153,12 @@ abstract class RulerTask : DefaultTask() {
         val htmlReporter = HtmlReporter()
         val htmlReport = htmlReporter.generateReport(jsonReport.readText(), reportDir)
         project.logger.lifecycle("Wrote HTML report to ${htmlReport.toPath().toUri()}")
+    }
+
+    /** Finds and returns the location of the Android SDK. */
+    private fun getAndroidSdkLocation(rootDir: File): Path {
+        val logger = StdLogger(StdLogger.Level.WARNING)
+        val issueReporter = DefaultIssueReporter(logger)
+        return SdkLocator.getSdkDirectory(rootDir, issueReporter).toPath()
     }
 }

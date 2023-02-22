@@ -14,22 +14,12 @@
 * limitations under the License.
 */
 
-package com.spotify.ruler.plugin.dependency
+package com.spotify.ruler_cli.dependency
 
-/** Single entry of a dependency. */
-sealed class DependencyEntry {
-    abstract val name: String
-    abstract val component: String
+import com.spotify.ruler.models.ComponentType
 
-    /** Default dependency entry. If an entry has no special type, it is considered to be a default entry. */
-    data class Default(
-        override val name: String,
-        override val component: String,
-    ) : DependencyEntry()
-
-    /** Class file dependency entry. */
-    data class Class(
-        override val name: String,
-        override val component: String,
-    ) : DependencyEntry()
-}
+/** Component representing a single dependency. */
+data class DependencyComponent(
+    val name: String,
+    val type: ComponentType,
+)

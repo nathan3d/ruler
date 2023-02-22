@@ -20,7 +20,6 @@ import com.google.common.truth.Truth.assertThat
 import com.spotify.ruler.models.AppFile
 import com.spotify.ruler.models.ComponentType
 import com.spotify.ruler.models.FileType
-import com.spotify.ruler.plugin.dependency.DependencyComponent
 import org.junit.jupiter.api.Test
 
 class AttributorTest {

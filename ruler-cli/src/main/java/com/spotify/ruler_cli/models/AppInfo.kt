@@ -14,12 +14,13 @@
 * limitations under the License.
 */
 
-package com.spotify.ruler.plugin.dependency
+package com.spotify.ruler_cli.models
 
-import com.spotify.ruler.models.ComponentType
+import java.io.Serializable
 
-/** Component representing a single dependency. */
-data class DependencyComponent(
-    val name: String,
-    val type: ComponentType,
-)
+/** General info about an app. */
+data class AppInfo(val variantName: String, val applicationId: String, val versionName: String) : Serializable {
+    companion object {
+        const val serialVersionUID = 1L
+    }
+}
