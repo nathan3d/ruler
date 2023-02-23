@@ -16,39 +16,22 @@
 
 package com.spotify.ruler.plugin
 
-import com.android.build.gradle.internal.SdkLocator
-import com.android.builder.errors.DefaultIssueReporter
-import com.android.utils.StdLogger
-import com.spotify.ruler.models.AppFile
-import com.spotify.ruler.models.ComponentType
 import com.spotify.ruler.plugin.dependency.EntryParser
-import com.spotify.rulercommon.apk.ApkCreator
-import com.spotify.rulercommon.apk.ApkParser
-import com.spotify.rulercommon.apk.ApkSanitizer
-import com.spotify.rulercommon.attribution.Attributor
-import com.spotify.rulercommon.sanitizer.ClassNameSanitizer
-import com.spotify.rulercommon.sanitizer.ResourceNameSanitizer
+import com.spotify.rulercommon.BaseRulerTask
+import com.spotify.rulercommon.RulerConfig
 import com.spotify.rulercommon.dependency.DependencyComponent
 import com.spotify.rulercommon.dependency.DependencySanitizer
 import com.spotify.rulercommon.models.AppInfo
 import com.spotify.rulercommon.models.DeviceSpec
-import com.spotify.rulercommon.ownership.OwnershipFileParser
-import com.spotify.rulercommon.ownership.OwnershipInfo
-import com.spotify.rulercommon.report.HtmlReporter
-import com.spotify.rulercommon.report.JsonReporter
+import com.spotify.rulercommon.sanitizer.ClassNameSanitizer
 import org.gradle.api.DefaultTask
 import org.gradle.api.file.DirectoryProperty
 import org.gradle.api.file.RegularFileProperty
 import org.gradle.api.provider.Property
-import org.gradle.api.tasks.Input
-import org.gradle.api.tasks.InputFile
-import org.gradle.api.tasks.Optional
-import org.gradle.api.tasks.OutputDirectory
-import org.gradle.api.tasks.TaskAction
+import org.gradle.api.tasks.*
 import java.io.File
-import java.nio.file.Path
 
-abstract class RulerTask : DefaultTask() {
+abstract class RulerTask : DefaultTask(), BaseRulerTask {
 
     @get:Input
     abstract val appInfo: Property<AppInfo>
@@ -85,80 +68,32 @@ abstract class RulerTask : DefaultTask() {
 
     @TaskAction
     fun analyze() {
-        val files = getFilesFromBundle() // Get all relevant files from the provided bundle
-        val dependencies = getDependencies() // Get all entries from all dependencies
-
-        // Split main APK bundle entries and dynamic feature module entries
-        val mainFiles = files.getValue(ApkCreator.BASE_FEATURE_NAME)
-        val featureFiles = files.filter { (feature, _) -> feature != ApkCreator.BASE_FEATURE_NAME }
-
-        // Attribute main APK bundle entries and group into components
-        val attributor = Attributor(DependencyComponent(project.path, ComponentType.INTERNAL))
-        val components = attributor.attribute(mainFiles, dependencies)
-
-        val ownershipInfo = getOwnershipInfo() // Get ownership information for all components
-        generateReports(components, featureFiles, ownershipInfo)
+        run()
     }
-
-    private fun getFilesFromBundle(): Map<String, List<AppFile>> {
-        val apkCreator = ApkCreator(project.rootDir, getAndroidSdkLocation(project.rootDir))
-        val splits = apkCreator.createSplitApks(bundleFile.asFile.get(), deviceSpec.get(), workingDir.asFile.get())
-
-        val apkParser = ApkParser()
-        val classNameSanitizer = ClassNameSanitizer(mappingFile.asFile.orNull)
-        val resourceNameSanitizer = ResourceNameSanitizer(resourceMappingFile.asFile.orNull)
-        val apkSanitizer = ApkSanitizer(classNameSanitizer, resourceNameSanitizer)
-
-        return splits.mapValues { (_, apks) ->
-            val entries = apks.flatMap(apkParser::parse)
-            apkSanitizer.sanitize(entries)
-        }
-    }
-
-    private fun getDependencies(): Map<String, List<DependencyComponent>> {
+     override fun getDependencies(): Map<String, List<DependencyComponent>> {
         val dependencyParser = EntryParser()
-        val entries = dependencyParser.parse(project, appInfo.get())
+        val entries = dependencyParser.parse(project, rulerConfig.appInfo)
 
-        val classNameSanitizer = ClassNameSanitizer(mappingFile.asFile.orNull)
+        val classNameSanitizer = ClassNameSanitizer(provideMappingFile())
         val dependencySanitizer = DependencySanitizer(classNameSanitizer)
         return dependencySanitizer.sanitize(entries)
     }
 
-    private fun getOwnershipInfo(): OwnershipInfo? {
-        val ownershipFile = ownershipFile.asFile.orNull ?: return null
-        val ownershipFileParser = OwnershipFileParser()
-        val ownershipEntries = ownershipFileParser.parse(ownershipFile)
+    override fun print(content: String) = project.logger.lifecycle(content)
+    override fun provideMappingFile(): File? = mappingFile.asFile.orNull
+    override fun provideResourceMappingFile(): File? = resourceMappingFile.asFile.orNull
+    override fun provideOwnershipFile(): File? = ownershipFile.asFile.orNull
 
-        return OwnershipInfo(ownershipEntries, defaultOwner.get())
-    }
-
-    private fun generateReports(
-        components: Map<DependencyComponent, List<AppFile>>,
-        features: Map<String, List<AppFile>>,
-        ownershipInfo: OwnershipInfo?,
-    ) {
-        val reportDir = reportDir.asFile.get()
-
-        val jsonReporter = JsonReporter()
-        val jsonReport = jsonReporter.generateReport(
-            appInfo.get(),
-            components,
-            features,
-            ownershipInfo,
-            reportDir,
-            omitFileBreakdown.get()
+    override val rulerConfig: RulerConfig
+        get() = RulerConfig(
+            projectPath = project.path,
+            rootDir = project.rootDir,
+            bundleFile = bundleFile.asFile.get(),
+            workingDir = workingDir.asFile.get(),
+            reportDir = reportDir.asFile.get(),
+            appInfo = appInfo.get(),
+            deviceSpec = deviceSpec.get(),
+            defaultOwner = defaultOwner.get(),
+            omitFileBreakdown = omitFileBreakdown.get()
         )
-        project.logger.lifecycle("Wrote JSON report to ${jsonReport.toPath().toUri()}")
-
-        val htmlReporter = HtmlReporter()
-        val htmlReport = htmlReporter.generateReport(jsonReport.readText(), reportDir)
-        project.logger.lifecycle("Wrote HTML report to ${htmlReport.toPath().toUri()}")
-    }
-
-    /** Finds and returns the location of the Android SDK. */
-    private fun getAndroidSdkLocation(rootDir: File): Path {
-        val logger = StdLogger(StdLogger.Level.WARNING)
-        val issueReporter = DefaultIssueReporter(logger)
-        return SdkLocator.getSdkDirectory(rootDir, issueReporter).toPath()
-    }
 }

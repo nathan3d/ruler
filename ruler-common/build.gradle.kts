@@ -14,6 +14,7 @@ java {
 dependencies {
     compileOnly(Dependencies.BUNDLETOOL)
     compileOnly(Dependencies.PROTOBUF_CORE)
+    compileOnly(Dependencies.ANDROID_GRADLE_PLUGIN)
     compileOnly(Dependencies.ANDROID_TOOLS_COMMON)
     compileOnly(Dependencies.ANDROID_TOOLS_SDKLIB)
     compileOnly(Dependencies.DEXLIB)
