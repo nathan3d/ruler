@@ -70,9 +70,11 @@ abstract class RulerTask : DefaultTask(), BaseRulerTask {
     fun analyze() {
         run()
     }
-     override fun getDependencies(): Map<String, List<DependencyComponent>> {
+
+    override fun providesDependencies(): Map<String, List<DependencyComponent>> {
         val dependencyParser = EntryParser()
-        val entries = dependencyParser.parse(project, rulerConfig.appInfo)
+        print("RulerConfig is ${rulerConfig()}")
+        val entries = dependencyParser.parse(project, rulerConfig().appInfo)
 
         val classNameSanitizer = ClassNameSanitizer(provideMappingFile())
         val dependencySanitizer = DependencySanitizer(classNameSanitizer)
@@ -83,9 +85,8 @@ abstract class RulerTask : DefaultTask(), BaseRulerTask {
     override fun provideMappingFile(): File? = mappingFile.asFile.orNull
     override fun provideResourceMappingFile(): File? = resourceMappingFile.asFile.orNull
     override fun provideOwnershipFile(): File? = ownershipFile.asFile.orNull
-
-    override val rulerConfig: RulerConfig
-        get() = RulerConfig(
+    override fun rulerConfig(): RulerConfig {
+        return RulerConfig(
             projectPath = project.path,
             rootDir = project.rootDir,
             bundleFile = bundleFile.asFile.get(),
@@ -96,4 +97,5 @@ abstract class RulerTask : DefaultTask(), BaseRulerTask {
             defaultOwner = defaultOwner.get(),
             omitFileBreakdown = omitFileBreakdown.get()
         )
+    }
 }

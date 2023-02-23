@@ -1,9 +1,13 @@
 plugins {
-    id("java-library")
     id("org.jetbrains.kotlin.jvm")
     id("org.jetbrains.kotlin.plugin.serialization")
     id("io.gitlab.arturbosch.detekt")
+    id("maven-publish")
+    id("signing")
 }
+
+extra[EXT_POM_NAME] = "Ruler common"
+extra[EXT_POM_DESCRIPTION] = "Common code used by the Ruler Gradle plugin & Ruler CLI"
 
 java {
     withSourcesJar()
@@ -12,6 +16,7 @@ java {
 }
 
 dependencies {
+    compileOnly(Dependencies.ANDROID_GRADLE_PLUGIN)
     compileOnly(Dependencies.BUNDLETOOL)
     compileOnly(Dependencies.PROTOBUF_CORE)
     compileOnly(Dependencies.ANDROID_GRADLE_PLUGIN)
@@ -33,4 +38,17 @@ dependencies {
     testImplementation(Dependencies.JUNIT_PARAMS)
     testImplementation(Dependencies.GOOGLE_TRUTH)
     testImplementation(Dependencies.GOOGLE_GUAVA)
+}
+
+publishing {
+    publications {
+        create<MavenPublication>("jvm") {
+            from(components["java"])
+        }
+    }
+    configurePublications(project)
+}
+
+signing {
+    configureSigning(publishing.publications)
 }

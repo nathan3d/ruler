@@ -28,12 +28,15 @@ interface BaseRulerTask {
     fun provideOwnershipFile(): File?
 
     //    fun provideOmitFileBreakdown(): Boolean
-    val rulerConfig: RulerConfig
-    fun getDependencies(): Map<String, List<DependencyComponent>>
+    fun rulerConfig(): RulerConfig
+    private val rulerConfig: RulerConfig
+        get() = rulerConfig()
+
+    fun providesDependencies(): Map<String, List<DependencyComponent>>
 
     fun run() {
         val files = getFilesFromBundle() // Get all relevant files from the provided bundle
-        val dependencies = getDependencies() // Get all entries from all dependencies
+        val dependencies = providesDependencies() // Get all entries from all dependencies
 
         // Split main APK bundle entries and dynamic feature module entries
         val mainFiles = files.getValue(ApkCreator.BASE_FEATURE_NAME)
