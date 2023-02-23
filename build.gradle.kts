@@ -36,6 +36,8 @@ buildscript {
         classpath(Dependencies.KOTLIN_REACT_FUNCTION_GRADLE_PLUGIN)
         classpath(Dependencies.DETEKT_GRADLE_PLUGIN)
         classpath(Dependencies.NEXUS_PUBLISH_GRADLE_PLUGIN)
+        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:1.7.20")
+        classpath("gradle.plugin.com.github.johnrengelman:shadow:7.1.2")
 
         if (!properties.containsKey("withoutSample")) {
             classpath(Dependencies.RULER_GRADLE_PLUGIN)

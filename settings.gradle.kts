@@ -45,3 +45,4 @@ gradleEnterprise {
         }
     }
 }
+include(":ruler-cli")
