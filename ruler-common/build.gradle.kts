@@ -16,7 +16,6 @@ java {
 }
 
 dependencies {
-    compileOnly(Dependencies.ANDROID_GRADLE_PLUGIN)
     compileOnly(Dependencies.BUNDLETOOL)
     compileOnly(Dependencies.PROTOBUF_CORE)
     compileOnly(Dependencies.ANDROID_GRADLE_PLUGIN)
@@ -26,6 +25,7 @@ dependencies {
 
     implementation(project(":ruler-models"))
 
+    implementation(Dependencies.ANDROID_GRADLE_PLUGIN)
     implementation(Dependencies.APK_ANALYZER) {
         exclude(group = "com.android.tools.lint") // Avoid leaking incompatible Lint versions to consumers
     }

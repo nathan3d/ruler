@@ -1,0 +1,52 @@
+{
+    "assets": [
+        {
+            "filename": "asset.txt",
+            "module": "example_lib"
+        }
+    ],
+    "jars": [
+        {
+            "jar": "bazel-out/darwin_arm64-fastbuild/bin/src/main/app_deploy.jar",
+            "module": "app"
+        },
+        {
+            "jar": "bazel-out/android-armeabi-v7a-fastbuild/bin/src/main/java/com/example/bazel/libgreeter_activity.jar",
+            "module": "greeter_activity"
+        },
+        {
+            "jar": "bazel-out/android-armeabi-v7a-fastbuild/bin/src/main/java/com/example/lib/libexample_lib.jar",
+            "module": "example_lib"
+        },
+        {
+            "jar": "external/maven/v1/https/repo1.maven.org/maven2/io/reactivex/rxjava3/rxjava/3.1.6/rxjava-3.1.6.jar",
+            "module": "io_reactivex_rxjava3_rxjava"
+        },
+        {
+            "jar": "external/maven/v1/https/repo1.maven.org/maven2/org/reactivestreams/reactive-streams/1.0.4/reactive-streams-1.0.4.jar",
+            "module": "org_reactivestreams_reactive_streams"
+        },
+        {
+            "jar": "bazel-out/android-armeabi-v7a-fastbuild/bin/src/main/java/com/example/kotlinlib/libexample_kotlin_lib.jar",
+            "module": "example_kotlin_lib"
+        }
+    ],
+    "resources": [
+        {
+            "filename": "test_drawable.xml",
+            "module": "greeter_activity"
+        },
+        {
+            "filename": "activity_main.xml",
+            "module": "greeter_activity"
+        },
+        {
+            "filename": "colors.xml",
+            "module": "greeter_activity"
+        },
+        {
+            "filename": "strings.xml",
+            "module": "greeter_activity"
+        }
+    ]
+}

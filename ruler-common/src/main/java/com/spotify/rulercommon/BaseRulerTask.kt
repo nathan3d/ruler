@@ -56,11 +56,15 @@ interface BaseRulerTask {
             rulerConfig.rootDir,
             getAndroidSdkLocation(rulerConfig.rootDir)
         )
-        val splits = apkCreator.createSplitApks(
-            rulerConfig.bundleFile,
-            rulerConfig.deviceSpec,
-            rulerConfig.workingDir
-        )
+        val splits = if (rulerConfig.bundleFile.extension == "apk") {
+            mapOf("apk" to listOf(rulerConfig.bundleFile))
+        } else {
+            apkCreator.createSplitApks(
+                rulerConfig.bundleFile,
+                rulerConfig.deviceSpec,
+                rulerConfig.workingDir
+            )
+        }
 
         val apkParser = ApkParser()
         val classNameSanitizer = ClassNameSanitizer(provideMappingFile())

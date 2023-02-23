@@ -6,13 +6,11 @@ import com.github.ajalt.clikt.core.CliktCommand
 import com.github.ajalt.clikt.parameters.arguments.argument
 import com.github.ajalt.clikt.parameters.types.file
 import com.spotify.rulercommon.BaseRulerTask
-import com.spotify.rulercommon.dependency.ArtifactResult
-import com.spotify.rulercommon.dependency.DefaultArtifactParser
+import com.spotify.rulercommon.dependency.*
 import com.spotify.rulercommon.models.RulerConfig
-import com.spotify.rulercommon.dependency.DependencyComponent
-import com.spotify.rulercommon.dependency.JarArtifactParser
 import com.spotify.rulercommon.models.AppInfo
 import com.spotify.rulercommon.models.DeviceSpec
+import com.spotify.rulercommon.sanitizer.ClassNameSanitizer
 import kotlinx.serialization.ExperimentalSerializationApi
 import java.io.File
 import kotlinx.serialization.Serializable
@@ -20,52 +18,62 @@ import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.decodeFromStream
 
 class RulerCli: CliktCommand(), BaseRulerTask {
-    val appBundle by argument().file()
     val dependencyMap by argument().file()
     val rulerConfigJson by argument().file()
 
     override fun print(content: String) = echo(content)
 
     override fun provideMappingFile(): File? {
+        return null
         TODO("Not yet implemented")
     }
 
     override fun provideResourceMappingFile(): File? {
+        return null
         TODO("Not yet implemented")
     }
 
     override fun provideOwnershipFile(): File? {
+        return null
         TODO("Not yet implemented")
     }
 
-    override val rulerConfig: RulerConfig
-        get() {
-            val json = Json.decodeFromStream<JsonRulerConfig>(rulerConfigJson.inputStream())
-            return RulerConfig(
-                projectPath = json.projectPath,
-                rootDir = File(json.rootDir),
-                workingDir = File(json.workingDir),
-                bundleFile = File(json.bundleFile),
-                reportDir = File(json.reportDir),
-                appInfo = json.appInfo,
-                deviceSpec = json.deviceSpec,
-                defaultOwner = json.defaultOwner,
-                omitFileBreakdown = json.omitFileBreakdown
-            )
-        }
-    override fun getDependencies(): Map<String, List<DependencyComponent>> {
+    override fun rulerConfig(): RulerConfig {
+        val json = Json.decodeFromStream<JsonRulerConfig>(rulerConfigJson.inputStream())
+        return RulerConfig(
+            projectPath = json.projectPath,
+            rootDir = File(json.rootDir),
+            workingDir = File(json.workingDir),
+            bundleFile = File(json.bundleFile),
+            reportDir = File(json.reportDir),
+            appInfo = json.appInfo,
+            deviceSpec = json.deviceSpec,
+            defaultOwner = json.defaultOwner,
+            omitFileBreakdown = json.omitFileBreakdown)
+    }
+
+    override fun providesDependencies(): Map<String, List<DependencyComponent>> {
         val json = Json.decodeFromStream<ModuleMap>(dependencyMap.inputStream())
 
-        val jarDepedencies = json.jars.flatMap {
+        val jarDependencies = json.jars.flatMap {
             JarArtifactParser().parseFile(ArtifactResult.JarArtifact(
-                File(it.jar), it.module
+                File(rulerConfig().workingDir, it.jar), it.module
             ))
         }
 
-        var assets = json.assets.map {
-
-
+        val assets = json.assets.map {
+            DependencyEntry.Default(it.filename, it.module)
         }
+
+        val resources = json.resources.map {
+            DependencyEntry.Default(it.filename, it.module)
+        }
+
+        val entries = jarDependencies + assets + resources
+
+        val classNameSanitizer = ClassNameSanitizer(provideMappingFile())
+        val dependencySanitizer = DependencySanitizer(classNameSanitizer)
+        return dependencySanitizer.sanitize(entries)
     }
 
     override fun run() {

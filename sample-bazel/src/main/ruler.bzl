@@ -27,8 +27,8 @@ def _ruler_aspect_impl(target, ctx):
     print(target.label.name)
     print(ctx.rule.kind)
 
-    if hasattr(ctx.rule.attr, 'deps'):
-        print(ctx.rule.attr.deps)
+    # if hasattr(ctx.rule.attr, 'deps'):
+    #     print(ctx.rule.attr.deps)
 
     # _describe("ctx", target, exclude = ["output_group"])
 
@@ -38,8 +38,16 @@ def _ruler_aspect_impl(target, ctx):
 
     # This gets all of the output jars in the target
     # We only care about the main output jar with the format: libname.jar
-    jars = [{"jar": jar.path, "module": target.label.name} for jar in target[DefaultInfo].files.to_list() if jar.extension == "jar"]
-    
+
+    filters = [
+        '_resources-src.jar',
+        '_resources.jar'
+    ]
+
+    jars = [{"jar": jar.path, "module": target.label.name} for jar in target[DefaultInfo].files.to_list() if (jar.extension == "jar" and not any([f in jar.path for f in filters]))]
+    for jar in target[DefaultInfo].files.to_list():
+#        _describe('file', jar, [])
+        print(jar.root.path)
 
     # Get the android assets if present
     assets = []

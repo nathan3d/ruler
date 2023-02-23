@@ -1,0 +1,20 @@
+{
+    "projectPath": "ruler-sample-bazel",
+    "rootDir": "/Users/nathanb/Developer/ruler/sample-bazel",
+    "workingDir": "/Users/nathanb/Developer/ruler/sample-bazel",
+    "bundleFile": "/private/var/tmp/_bazel_nathanb/115c8497a9259e57bcb669e7fe3f5be4/execroot/__main__/bazel-out/darwin_arm64-fastbuild/bin/src/main/app.apk",
+    "reportDir": "/Users/nathanb/Developer/ruler/sample-bazel",
+    "appInfo": {
+        "variantName": "release",
+        "applicationId": "com.ruler.example-bazel",
+        "versionName": "1.0.0"
+    },
+    "deviceSpec": {
+        "supportedAbis": [""],
+        "supportedLocales": [""],
+        "screenDensity": 0,
+        "sdkVersion": 33
+    },
+    "defaultOwner": "sample-default-owner",
+    "omitFileBreakdown": false
+}
