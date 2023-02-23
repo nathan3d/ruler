@@ -35,7 +35,7 @@ dependencies {
     compileOnly(Dependencies.DEXLIB)
 
     implementation(project(":ruler-models"))
-    implementation(project(":ruler-cli"))
+    implementation(project(":ruler-common"))
 
     implementation(Dependencies.APK_ANALYZER) {
         exclude(group = "com.android.tools.lint") // Avoid leaking incompatible Lint versions to consumers

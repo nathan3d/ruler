@@ -57,9 +57,9 @@ object Dependencies {
     const val APEX_CHARTS = "apexcharts"
 
     object Versions {
-        const val ANDROID_GRADLE_PLUGIN = "7.4.1" // https://mvnrepository.com/artifact/com.android.tools.build/gradle?repo=google
+        const val ANDROID_GRADLE_PLUGIN = "7.2.1" // https://mvnrepository.com/artifact/com.android.tools.build/gradle?repo=google
         const val KOTLIN = "1.6.20" // https://mvnrepository.com/artifact/org.jetbrains.kotlin/kotlin-stdlib
-        const val PROGUARD_GRADLE_PLUGIN = "7.3.1" // https://mvnrepository.com/artifact/com.guardsquare/proguard-gradle
+        const val PROGUARD_GRADLE_PLUGIN = "7.2.1" // https://mvnrepository.com/artifact/com.guardsquare/proguard-gradle
         const val KOTLIN_REACT_FUNCTION = "0.7.0" // https://mvnrepository.com/artifact/com.bnorm.react.kotlin-react-function/com.bnorm.react.kotlin-react-function.gradle.plugin
         const val DETEKT_GRADLE_PLUGIN = "1.20.0" // https://mvnrepository.com/artifact/io.gitlab.arturbosch.detekt/detekt-gradle-plugin
         const val NEXUS_PUBLISH_GRADLE_PLUGIN = "1.1.0" // https://mvnrepository.com/artifact/io.github.gradle-nexus.publish-plugin/io.github.gradle-nexus.publish-plugin.gradle.plugin
