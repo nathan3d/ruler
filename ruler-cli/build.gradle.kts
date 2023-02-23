@@ -16,6 +16,7 @@ dependencies {
     implementation(project(":ruler-models"))
     implementation(project(":ruler-common"))
     implementation("com.github.ajalt.clikt:clikt:3.5.1")
+    implementation(Dependencies.KOTLINX_SERIALIZATION_JSON)
 }
 
 application {

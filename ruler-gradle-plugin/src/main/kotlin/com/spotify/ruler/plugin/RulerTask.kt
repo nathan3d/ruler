@@ -18,7 +18,7 @@ package com.spotify.ruler.plugin
 
 import com.spotify.ruler.plugin.dependency.EntryParser
 import com.spotify.rulercommon.BaseRulerTask
-import com.spotify.rulercommon.RulerConfig
+import com.spotify.rulercommon.models.RulerConfig
 import com.spotify.rulercommon.dependency.DependencyComponent
 import com.spotify.rulercommon.dependency.DependencySanitizer
 import com.spotify.rulercommon.models.AppInfo

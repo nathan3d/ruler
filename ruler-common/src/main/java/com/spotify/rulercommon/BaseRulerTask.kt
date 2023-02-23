@@ -10,8 +10,7 @@ import com.spotify.rulercommon.apk.ApkParser
 import com.spotify.rulercommon.apk.ApkSanitizer
 import com.spotify.rulercommon.attribution.Attributor
 import com.spotify.rulercommon.dependency.DependencyComponent
-import com.spotify.rulercommon.models.AppInfo
-import com.spotify.rulercommon.models.DeviceSpec
+import com.spotify.rulercommon.models.RulerConfig
 import com.spotify.rulercommon.ownership.OwnershipFileParser
 import com.spotify.rulercommon.ownership.OwnershipInfo
 import com.spotify.rulercommon.report.HtmlReporter
@@ -113,14 +112,3 @@ interface BaseRulerTask {
 }
 
 
-data class RulerConfig(
-    val projectPath: String,
-    val rootDir: File,
-    val workingDir: File,
-    val bundleFile: File,
-    val reportDir: File,
-    val appInfo: AppInfo,
-    val deviceSpec: DeviceSpec,
-    val defaultOwner: String,
-    val omitFileBreakdown: Boolean
-)
